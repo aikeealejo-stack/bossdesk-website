@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BossDesk</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- AUTH -->
+  <section id="auth" class="screen">
+    <div class="brand">
+      <div class="brand-icon">💼</div>
+      <h1>BossDesk</h1>
+      <p class="muted">Your boss's day, perfectly managed.</p>
+    </div>
+    <form id="authForm" class="card">
+      <h2 id="authTitle">Create your account</h2>
+      <p class="muted small" id="authSub">This device will own the assistant account.</p>
+      <label id="nameWrap">Your name<input id="aName" placeholder="e.g. Alex"></label>
+      <label>Email<input id="aEmail" type="email" placeholder="you@example.com" required></label>
+      <label>Password<input id="aPass" type="password" placeholder="••••••••" minlength="8" required></label>
+      <p class="muted small">Minimum 8 characters</p>
+      <p id="authErr" class="error"></p>
+      <button class="btn" id="authBtn">Create account</button>
+      <button type="button" class="link" id="authToggle">Already registered? Sign in</button>
+    </form>
+  </section>
+
+  <!-- MAIN -->
+  <div id="main" hidden>
+    <div id="views">
+
+      <!-- Dashboard -->
+      <section class="view" id="v-dashboard">
+        <div class="dash-head">
+          <p class="date" id="today"></p>
+          <h1 id="greeting"></h1>
+          <p class="muted" id="subGreeting"></p>
+        </div>
+
+        <div class="dash-grid">
+          <div class="col">
+            <div class="boss-card" id="bossCard"></div>
+
+            <div class="stats">
+              <div class="stat"><span class="stat-ic">📅</span><b id="sMeet">0</b><span>Meetings today</span></div>
+              <div class="stat"><span class="stat-ic">🔔</span><b id="sRem">0</b><span>Reminders</span></div>
+              <div class="stat"><span class="stat-ic">👥</span><b id="sCont">0</b><span>Contacts</span></div>
+            </div>
+
+            <h3 class="section-title"><span class="dot">✨</span> Day Starter</h3>
+            <div class="card center" id="briefBox">
+              <div class="big-icon">☀️</div>
+              <h3>Get today's morning brief</h3>
+              <p class="muted small">Quick bullets to kick off the day.</p>
+              <button class="btn small-btn" id="briefBtn">Generate brief</button>
+            </div>
+          </div>
+
+          <div class="col">
+            <h2 class="h2">Today's agenda</h2>
+            <div id="agenda"></div>
+
+            <div class="row-between">
+              <h2 class="h2">Reminders due today</h2>
+              <a href="#" class="link" data-go="reminders">See all</a>
+            </div>
+            <div id="dueToday"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reminders -->
+      <section class="view" id="v-reminders" hidden>
+        <h1>Reminders</h1>
+        <div class="tabs" id="remTabs">
+          <button class="tab active" data-f="today">Today</button>
+          <button class="tab" data-f="upcoming">Upcoming</button>
+          <button class="tab" data-f="overdue">Overdue</button>
+          <button class="tab" data-f="done">Done</button>
+        </div>
+        <div id="remList"></div>
+      </section>
+
+      <!-- Calendar -->
+      <section class="view" id="v-calendar" hidden>
+        <div class="row-between"><h1>Calendar</h1>
+          <button class="btn small-btn" onclick="window.print()">🖨 Print</button></div>
+        <p class="muted">All meetings, sorted by date.</p>
+        <div id="meetList"></div>
+      </section>
+
+      <!-- Recordings -->
+      <section class="view" id="v-recordings" hidden>
+        <h1>Recordings</h1>
+        <div class="card center">
+          <div class="big-icon">🎙️</div>
+          <h3>No recordings yet</h3>
+          <p class="muted small">Recording and transcription will be added in the full app.</p>
+        </div>
+      </section>
+
+      <!-- Settings -->
+      <section class="view" id="v-settings" hidden>
+        <h1>Settings</h1>
+        <form id="bossForm" class="card">
+          <h3>Boss profile</h3>
+          <label>Name<input id="bName" placeholder="Jane CEO"></label>
+          <label>Title<input id="bTitle" placeholder="Chief Executive"></label>
+          <label>Email<input id="bEmail" type="email" placeholder="boss@company.com"></label>
+          <label>WhatsApp (with country code)<input id="bWa" placeholder="971501234567"></label>
+          <label>Time zone<input id="bTz" placeholder="Asia/Dubai"></label>
+          <button class="btn">Save profile</button>
+          <p id="saved" class="muted small"></p>
+        </form>
+        <button class="btn ghost" id="logout">Log out</button>
+      </section>
+    </div>
+
+    <button class="fab" id="fab">＋</button>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-go="dashboard"><span>🏠</span>Dashboard</button>
+      <button class="nav-btn" data-go="reminders"><span>🔔</span>Reminders</button>
+      <button class="nav-btn" data-go="calendar"><span>📅</span>Calendar</button>
+      <button class="nav-btn" data-go="recordings"><span>🎙️</span>Recordings</button>
+      <button class="nav-btn" data-go="settings"><span>⚙️</span>Settings</button>
+    </nav>
+  </div>
+
+  <!-- ADD MODAL -->
+  <div class="modal" id="modal" hidden>
+    <form class="sheet" id="addForm">
+      <div class="row-between"><h3>Add new</h3><button type="button" class="link" id="closeModal">Close</button></div>
+      <select id="addType">
+        <option value="reminder">Reminder</option>
+        <option value="meeting">Meeting</option>
+        <option value="contact">Contact</option>
+      </select>
+      <div id="fReminder">
+        <input id="rTitle" placeholder="Reminder title">
+        <input id="rDate" type="date"><input id="rTime" type="time">
+        <select id="rPri"><option>Low</option><option selected>Medium</option><option>High</option></select>
+      </div>
+      <div id="fMeeting" hidden>
+        <input id="mTitle" placeholder="Meeting title">
+        <input id="mDate" type="date"><input id="mTime" type="time">
+        <input id="mLoc" placeholder="Location or video link">
+      </div>
+      <div id="fContact" hidden>
+        <input id="cName" placeholder="Name">
+        <input id="cEmail" type="email" placeholder="Email">
+        <input id="cWa" placeholder="WhatsApp number">
+      </div>
+      <button class="btn">Save</button>
+    </form>
+  </div>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
